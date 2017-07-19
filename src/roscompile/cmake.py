@@ -3,6 +3,7 @@ import re
 import os.path
 from roscompile.config import CFG
 from roscompile.util import clean_contents, remove_blank_lines, remove_all_hashes
+from roscompile.cmake_parser import parse_file, parse_command
 
 BREAKERS = ['catkin_package']
 ALL_CAPS = re.compile('^[A-Z_]+$')
@@ -18,11 +19,11 @@ ORDERING = ['cmake_minimum_required', 'project', 'set_directory_properties', 'fi
 SHOULD_ALPHABETIZE = ['COMPONENTS', 'DEPENDENCIES', 'FILES', 'CATKIN_DEPENDS']
 
 INSTALL_CONFIGS = {
-    'exec':    ('TARGETS', {'${CATKIN_PACKAGE_BIN_DESTINATION}': 'RUNTIME DESTINATION'}),
+    'exec': ('TARGETS', {'${CATKIN_PACKAGE_BIN_DESTINATION}': 'RUNTIME DESTINATION'}),
     'library': ('TARGETS', {'${CATKIN_PACKAGE_LIB_DESTINATION}': ('ARCHIVE DESTINATION', 'LIBRARY DESTINATION'),
-                            '${CATKIN_GLOBAL_BIN_DESTINATION}':  'RUNTIME DESTINATION'}),
-    'headers': ('FILES',   {'${CATKIN_PACKAGE_INCLUDE_DESTINATION}': 'DESTINATION'}),
-    'misc':    ('FILES',   {'${CATKIN_PACKAGE_SHARE_DESTINATION}':   'DESTINATION'})
+                            '${CATKIN_GLOBAL_BIN_DESTINATION}': 'RUNTIME DESTINATION'}),
+    'headers': ('FILES', {'${CATKIN_PACKAGE_INCLUDE_DESTINATION}': 'DESTINATION'}),
+    'misc': ('FILES', {'${CATKIN_PACKAGE_SHARE_DESTINATION}': 'DESTINATION'})
 }
 
 def get_ordering_index(cmd):
@@ -221,8 +222,6 @@ class CommandGroup:
 
     def __repr__(self):
         return str(self.initial_tag) + str(self.sub) + str(self.close_tag)
-
-from roscompile.cmake_parser import parse_file, parse_command
 
 class CMake:
     def __init__(self, fn=None, name=None, initial_contents=None, indent=0):
