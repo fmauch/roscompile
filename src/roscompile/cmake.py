@@ -3,7 +3,6 @@ import re
 import os.path
 from roscompile.config import CFG
 from roscompile.util import clean_contents, remove_blank_lines, remove_all_hashes
-from roscompile.cmake_parser import parse_file, parse_command
 
 BREAKERS = ['catkin_package']
 ALL_CAPS = re.compile('^[A-Z_]+$')
@@ -222,6 +221,8 @@ class CommandGroup:
 
     def __repr__(self):
         return str(self.initial_tag) + str(self.sub) + str(self.close_tag)
+
+from roscompile.cmake_parser import parse_file, parse_command
 
 class CMake:
     def __init__(self, fn=None, name=None, initial_contents=None, indent=0):
